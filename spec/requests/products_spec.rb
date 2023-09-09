@@ -3,7 +3,7 @@ require 'app_config'
 
 RSpec.describe 'Products', type: :request do
   describe 'GET /users/:user_id/products/:id' do
-    let(:user) { User.create! }
+    let(:user) { User.create!(time_zone: 'Australia/Brisbane') }
     let(:monthly_quota) { 100 }
     let(:redis) { MockRedis.new }
 
@@ -20,13 +20,15 @@ RSpec.describe 'Products', type: :request do
 
     context 'when quota resets for Australians' do
       let(:hits) { monthly_quota }
+      let(:id) { 1 }
 
-      it 'returns error' do
+      it 'returns a JSON response with the hit data' do
+        # FIX: No longer returns over quota error
         Timecop.freeze(Time.zone.parse('2022-11-01 01:12:54 +1000')) do
-          get "/user/#{user.id}/products/1"
+          get "/user/#{user.id}/products/#{id}"
 
           json_response = JSON.parse(response.body)
-          expect(json_response['error']).to eq('over quota')
+          expect(json_response['table']['id']).to eq(id)
         end
       end
     end

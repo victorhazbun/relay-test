@@ -13,7 +13,7 @@ class UserQuota
     @user = user
     @monthly_quota = monthly_quota
     @redis = redis
-    now = Time.now
+    now = Time.current
     current_month = now.beginning_of_month.month
     current_year = now.beginning_of_month.year
     @redis_key = "monthly_hits:#{user.id}:#{current_month}:#{current_year}"

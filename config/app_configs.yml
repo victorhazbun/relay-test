@@ -1,5 +1,6 @@
 default: &default
   monthly_quota: 10_000
+  over_quota_error_message: 'over quota'
 development:
   <<: *default
 test:

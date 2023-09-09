@@ -7,7 +7,7 @@ class UserQuota
   end
 
   def over_quota?
-    start = Time.now.beginning_of_month
+    start = Time.now.in_time_zone(user.time_zone).beginning_of_month
 		user.hits.where('created_at > ?', start).count >= monthly_quota
   end
 end

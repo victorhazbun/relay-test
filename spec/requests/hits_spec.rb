@@ -9,7 +9,7 @@ RSpec.describe 'Hits', type: :request do
     before do
       Timecop.freeze(Time.zone.parse('2022-10-31 23:59:17 +1000'))
       ApplicationRecord.connected_to(role: :writing, shard: au_country_code) do
-        @user = User.create!
+        @user = User.create!(time_zone: 'Australia/Brisbane')
         @hit_a = @user.hits.create!(endpoint: 'a.domain.com')
         @hit_b = @user.hits.create!(endpoint: 'b.domain.com')
         @hit_c = @user.hits.create!(endpoint: 'c.domain.com')
@@ -46,12 +46,14 @@ RSpec.describe 'Hits', type: :request do
     context 'when quota resets for Australians' do
       let(:monthly_quota) { 3 }
 
-      it 'returns error' do
+
+      it 'returns a JSON response with the hit data' do
+        # FIX: No longer returns over quota error
         Timecop.freeze(Time.zone.parse('2022-11-01 01:12:54 +1000')) do
           get "/user/#{@user.id}/hits/#{@hit_a.id}", params: { country_code: :au }
 
           json_response = JSON.parse(response.body)
-          expect(json_response['error']).to eq('over quota')
+          expect(json_response['id']).to eq(@hit_a.id)
         end
       end
     end

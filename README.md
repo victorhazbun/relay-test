@@ -1,24 +1,26 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
 Things you may want to cover:
 
-* Ruby version
+# 1 - Improve API Response Time
 
-* System dependencies
+**Root Cause:** Full table scan.
 
-* Configuration
+**Solution:** DB index and DB sharding per country.
 
-* Database creation
+# 2 - "Over Quota" Errors for Australian Users
 
-* Database initialization
+**Root Cause:** The issue is related to time zone differences when calculating the beginning of the month.
 
-* How to run the test suite
+**Solution:** Use the current user time zone for quota calculations.
 
-* Services (job queues, cache servers, search engines, etc.)
+# 3 - Users Making Requests Over the Monthly Limit
 
-* Deployment instructions
+**Root Cause:** ?
+**Solution:** ?
 
-* ...
+# 4 - Improve Code Quality
+
+**Issue:** The codebase has accumulated technical debt and bad coding practices.
+
+**Solution:** Added automated tests, introduced service object for quota calculation, introduced app config service to read application configs.

@@ -6,7 +6,7 @@ describe UserQuota do
 
   before do
     ApplicationRecord.connected_to(role: :writing, shard: au_country_code) do
-      @user = User.create
+      @user = User.create!
       5.times { @user.hits.create! }
     end
   end

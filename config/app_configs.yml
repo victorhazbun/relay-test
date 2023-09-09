@@ -1,0 +1,6 @@
+default: &default
+  monthly_quota: 10_000
+development:
+  <<: *default
+test:
+  <<: *default

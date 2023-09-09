@@ -30,7 +30,7 @@ describe UserQuota do
     end
 
     context 'when user hits count is less than the max quota' do
-      let(:hits) { 98 }
+      let(:hits) { 99 }
 
       it { expect(user_quota.over_quota?).to be_falsey }
     end

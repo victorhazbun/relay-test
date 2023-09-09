@@ -23,6 +23,6 @@ class UserQuota
   #
   # @return [Boolean] True if the user has exceeded the quota, false otherwise.
   def over_quota?
-    redis.incr(redis_key).to_i >= monthly_quota
+    redis.incr(redis_key).to_i > monthly_quota
   end
 end

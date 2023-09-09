@@ -43,11 +43,12 @@ RSpec.describe 'Products', type: :request do
 
       it 'does not exceed the monthly quota' do
         # Start multiple threads to simulate concurrent requests
-        # 4 threads and 3 requests per thread = 12 requests.
+        # 4 threads and 3 requests per thread = 12 requests (succeed)
+        # 4 threads and 1 extra request per thread = 4 requests (fail).
         concurrent_requests.times do |i|
           threads << Thread.new do
             # Simulate hits created by different threads
-            hits_to_create = monthly_quota / concurrent_requests
+            hits_to_create = (monthly_quota / concurrent_requests) + 1
             hits_to_create.times do
               get "/user/#{user.id}/products/#{id}"
               results << JSON.parse(response.body)
@@ -57,10 +58,11 @@ RSpec.describe 'Products', type: :request do
 
         # Wait for all threads to finish
         threads.each(&:join)
+
         # Ensure that results are successful responses
-        expect(results.count { |entry| entry.key?('table') }).to eq(monthly_quota - 1)
+        expect(results.count { |entry| entry.key?('table') }).to eq(monthly_quota)
         # Any subsequent response will be error based on monthly quota.
-        expect(results.last['error']).to eq('over quota')
+        expect(results.count { |entry| entry.key?('error') }).to eq(concurrent_requests)
       end
     end
   end

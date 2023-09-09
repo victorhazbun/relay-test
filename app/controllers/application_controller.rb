@@ -1,12 +1,16 @@
-class ApplicationController < ActionController::API
-  before_action :user_quota
+require 'user_quota'
 
-	def user_quota
-    if user_quota.over_quota?
-		  render json: { error: 'over quota' }
-    else
-      user_quota.increment
-    end
+class ApplicationController < ActionController::API
+  before_action :register_user_quota
+  # around_action :set_time_zone
+
+  def register_user_quota
+    user_quota = UserQuota.new(
+      user: current_user,
+      monthly_quota: AppConfig.get(:monthly_quota),
+      redis: Redis.new
+    )
+    render json: { error: 'over quota' } if user_quota.over_quota?
   end
 
   protected
@@ -17,11 +21,7 @@ class ApplicationController < ActionController::API
 
   private
 
-  def user_quota
-    @user_quota ||= UserQuota.new(
-      user: current_user,
-      monthly_quota: AppConfig.get(:monthly_quota),
-      redis: Redis.new
-    )
+  def set_time_zone
+    Time.use_zone(current_user.time_zone) { yield }
   end
 end

@@ -13,23 +13,16 @@ class UserQuota
     @user = user
     @monthly_quota = monthly_quota
     @redis = redis
-    now = Time.current
+    now = Time.now
     current_month = now.beginning_of_month.month
     current_year = now.beginning_of_month.year
     @redis_key = "monthly_hits:#{user.id}:#{current_month}:#{current_year}"
   end
 
-  # Check if the user has exceeded their monthly quota.
+  # Increases the counter and checks if the user has exceeded their monthly quota.
   #
   # @return [Boolean] True if the user has exceeded the quota, false otherwise.
   def over_quota?
-    redis.get(redis_key).to_i >= monthly_quota
-  end
-
-  # Increment the usage count for the user's monthly quota.
-  #
-  # @return [Integer] The updated usage count.
-  def increment
-    redis.incr(redis_key)
+    redis.incr(redis_key).to_i >= monthly_quota
   end
 end

@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
       monthly_quota: AppConfig.get(:monthly_quota),
       redis: Redis.new
     )
-    render json: { error: AppConfig.over_quota_error_message } if user_quota.over_quota?
+    render json: { error: AppConfig.get(:over_quota_error_message) } if user_quota.over_quota?
   end
 
   protected

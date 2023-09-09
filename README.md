@@ -1,24 +1,24 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# 1 - Improve API Response Time
 
-Things you may want to cover:
+**Root Cause:** Full SQL table scan.
 
-* Ruby version
+**Solution:** Consider using Redis as a primary data store for hit counts, as it's well-suited for high-performance data retrieval.
 
-* System dependencies
+# 2 - "Over Quota" Errors for Australian Users
 
-* Configuration
+**Root Cause:** The issue is related to time zone differences when calculating the beginning of the month.
 
-* Database creation
+**Solution:** Use the current user time zone for quota calculations.
 
-* Database initialization
+# 3 - Users Making Requests Over the Monthly Limit
 
-* How to run the test suite
+**Root Cause:** The issue likely arises due to a lack of synchronization and concurrency control when updating the hit count.
+**Solution:** Utilize Redis as it's well-suited for this purpose and offers better performance and concurrency handling compared to traditional relational databases, which can be prone to locking issues and degraded performance in high-traffic scenarios.
 
-* Services (job queues, cache servers, search engines, etc.)
+# 4 - Improve Code Quality
 
-* Deployment instructions
+**Issue:** The codebase has accumulated technical debt and bad coding practices.
 
-* ...
+**Solution:** Added automated tests, introduced service object for quota calculation, introduced app config service to read application configs.

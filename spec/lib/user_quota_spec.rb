@@ -13,21 +13,36 @@ describe UserQuota do
 
   describe '#over_quota?' do
     context 'when user hits count is greater than the max quota' do
-      let(:hits) { 101 }
+      let(:hits) { monthly_quota + 1 }
 
       it { expect(user_quota.over_quota?).to be_truthy }
     end
 
     context 'when user hits count is equal to the max quota' do
-      let(:hits) { 100 }
+      let(:hits) { monthly_quota }
 
       it { expect(user_quota.over_quota?).to be_truthy }
     end
 
     context 'when user hits count is less than the max quota' do
-      let(:hits) { 99 }
+      let(:hits) { monthly_quota - 1 }
 
       it { expect(user_quota.over_quota?).to be_falsey }
+    end
+
+    context 'when quota expires' do
+      let(:hits) { monthly_quota }
+      let(:original_time) { Time.current }
+
+      it 'resets and increment the quota' do
+        Timecop.freeze(original_time) do
+          user_quota.over_quota?
+        end
+
+        Timecop.travel(original_time.end_of_month + 3.days) do
+          expect { user_quota.over_quota? }.to change { redis.get(redis_key) }.from(nil).to("1")
+        end
+      end
     end
   end
 end

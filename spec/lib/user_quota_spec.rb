@@ -4,10 +4,7 @@ require 'user_quota'
 describe UserQuota do
   let(:user) { User.create! }
   let(:redis) { MockRedis.new }
-  let(:now) { Time.current }
-  let(:current_month) { now.beginning_of_month.month }
-  let(:current_year) { now.beginning_of_month.year }
-  let(:redis_key) { "monthly_hits:#{user.id}:#{current_month}:#{current_year}" }
+  let(:redis_key) { "users:#{user.id}:monthly_hits_count" }
   let(:monthly_quota) { 100 }
 
   before do

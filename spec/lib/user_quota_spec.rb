@@ -7,9 +7,7 @@ describe UserQuota do
   let(:redis_key) { "users:#{user.id}:monthly_hits_count" }
   let(:monthly_quota) { 100 }
 
-  before do
-    redis.set(redis_key, hits)
-  end
+  before { redis.set(redis_key, hits) }
 
   subject(:user_quota) { described_class.new(user:, monthly_quota:, redis:) }
 

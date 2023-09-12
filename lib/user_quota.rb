@@ -21,9 +21,8 @@ class UserQuota
   # @return [Boolean] True if the user has exceeded the quota, false otherwise.
   def over_quota?
     redis.watch(redis_key)
-    current_count = redis.get(redis_key).to_i
     redis.multi do
-      redis.set(redis_key, current_count + 1)
+      redis.incr(redis_key)
       redis.expireat(redis_key, Time.current.end_of_month.to_i)
     end
     redis.get(redis_key).to_i > monthly_quota

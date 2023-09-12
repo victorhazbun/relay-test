@@ -24,7 +24,6 @@ class UserQuota
       redis.incr(redis_key)
       redis.expireat(redis_key, Time.current.end_of_month.to_i)
     end
-    redis.ttl(redis_key)
     redis.get(redis_key).to_i > monthly_quota
   end
 end

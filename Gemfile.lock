@@ -193,6 +193,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   byebug
+  connection_pool
   debug
   mock_redis
   pg (~> 1.1)

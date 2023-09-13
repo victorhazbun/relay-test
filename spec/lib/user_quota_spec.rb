@@ -3,11 +3,15 @@ require 'user_quota'
 
 describe UserQuota do
   let(:user) { User.create! }
-  let(:redis) { MockRedis.new }
+  let(:redis) { RelayTest.redis }
+  let(:mock_redis) { MockRedis.new }
   let(:redis_key) { "users:#{user.id}:monthly_hits_count" }
   let(:monthly_quota) { 100 }
 
-  before { redis.set(redis_key, hits) }
+  before do
+    allow(Redis).to receive(:new).and_return(mock_redis)
+    redis.set(redis_key, hits)
+  end
 
   subject(:user_quota) { described_class.new(user:, monthly_quota:, redis:) }
 

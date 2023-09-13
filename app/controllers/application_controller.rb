@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
     user_quota = UserQuota.new(
       user: current_user,
       monthly_quota: AppConfig.get(:monthly_quota),
-      redis: Redis.new
+      redis: RelayTest.redis
     )
     render json: { error: AppConfig.get(:over_quota_error_message) } if user_quota.over_quota?
   end
